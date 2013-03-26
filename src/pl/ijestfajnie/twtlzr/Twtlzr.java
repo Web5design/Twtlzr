@@ -68,25 +68,22 @@ public class Twtlzr extends javax.swing.JApplet {
         }
     }
     
-    int classifyStatus(String str) {
+    int classifyChance(String str) {
         final UClassifyClientFactory factory = UClassifyClientFactory.newInstance("6WWnKIeRhaLqO6JaOBwvNlmzR0", null);
         final UClassifyClient client = factory.createUClassifyClient();
-        Map<String, Classification> classifications = client.classify("uClassify", "Mood", Arrays.asList(str));
+        Map<String, Classification> classifications = client.classify("prfekt", "Mood", Arrays.asList(str));
         for(String text : classifications.keySet()) {
                 Classification classification = classifications.get(text);
-                for (com.uclassify.api._1.responseschema.Class clazz : classification.getClazz()) {
-                        System.out.println(clazz.getClassName() + ":" + clazz.getP());
-                }
+                int happy = (int) (classification.getClazz().get(0).getP() * 100);
+                return Math.abs(happy - 50);
         }
         return 0;
     }
     
-    String parseStatus(Status stat) {
-        String str = stat.getText();
-        UserMentionEntity[] mentioned = stat.getUserMentionEntities();
+    String parseStatus(String str, UserMentionEntity[] mentioned) {
         for (UserMentionEntity mention: mentioned) {
             System.out.println(mention.getName() + " " + mention.getScreenName());
-            str.replace(mention.getScreenName(), mention.getName());
+            str = str.substring(0, str.indexOf(mention.getScreenName()) - 1) + mention.getName() + str.substring(str.indexOf(mention.getScreenName()) + mention.getScreenName().length());
         }
         System.out.println(str);
         return str;
@@ -118,6 +115,7 @@ public class Twtlzr extends javax.swing.JApplet {
         input = new javax.swing.JTextField();
 
         output.setColumns(20);
+        output.setLineWrap(true);
         output.setRows(5);
         jScrollPane2.setViewportView(output);
 
@@ -128,7 +126,7 @@ public class Twtlzr extends javax.swing.JApplet {
             }
         });
 
-        input.setText("tweet id to parse...");
+        input.setText("316468703103434752");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -156,7 +154,21 @@ public class Twtlzr extends javax.swing.JApplet {
     }// </editor-fold>//GEN-END:initComponents
 
     private void magicalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_magicalButtonActionPerformed
-        output.setText(parseStatus(fetchStatus(Long.parseLong(input.getText()))));
+        String idst;
+        idst = input.getText();
+        Long idlo;
+        idlo = Long.parseLong(idst);
+        Status stat;
+        stat = fetchStatus(idlo);
+        String text;
+        text = stat.getText();
+        UserMentionEntity[] ment;
+        ment = stat.getUserMentionEntities();
+        if (ment.length > 0) {
+            text = parseStatus(text, ment);
+        }
+        System.out.println(classifyChance(stat.getText()));
+        output.setText(text);
     }//GEN-LAST:event_magicalButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

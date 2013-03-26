@@ -52,6 +52,7 @@
         <Component class="javax.swing.JTextArea" name="output">
           <Properties>
             <Property name="columns" type="int" value="20"/>
+            <Property name="lineWrap" type="boolean" value="true"/>
             <Property name="rows" type="int" value="5"/>
           </Properties>
         </Component>
@@ -67,7 +68,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="input">
       <Properties>
-        <Property name="text" type="java.lang.String" value="tweet id to parse..."/>
+        <Property name="text" type="java.lang.String" value="316468703103434752"/>
       </Properties>
     </Component>
   </SubComponents>
